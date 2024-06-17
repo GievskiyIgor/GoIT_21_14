@@ -1,7 +1,7 @@
 import enum
 from datetime import date
 
-from sqlalchemy import String, Integer,ForeignKey, DateTime, func, Enum
+from sqlalchemy import Boolean, String, Integer,ForeignKey, DateTime, func, Enum
 from sqlalchemy.orm import Mapped, DeclarativeBase, mapped_column, relationship 
 
 class Base(DeclarativeBase):
@@ -22,12 +22,10 @@ class User():
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     avatar: Mapped[str] = mapped_column(String(255), nullable=True)
     refresh_token: Mapped[str] = mapped_column(String(255), nullable=True)
-    
-    create_at: Mapped[date] = mapped_column("crete_at", DateTime,default=func.now())
-    
-    update_at: Mapped[date] = mapped_column("update_at", DateTime,default=func.now(), onupdate=func.now())
-    
-    role: Mapped[Enum] = relationship("role", Enum(Role), default=Role.user, nullable=True)
+    created_at: Mapped[date] = mapped_column("created_at", DateTime, default=func.now())
+    updated_at: Mapped[date] = mapped_column("updated_at", DateTime, default=func.now(), onupdate=func.now())
+    role: Mapped[Enum] = mapped_column("role", Enum(Role), default=Role.user, nullable=True)
+    confirmed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
     
 
 class Contact(Base):
@@ -40,11 +38,9 @@ class Contact(Base):
     phone_number: Mapped[str] = mapped_column(String(30))
     birthday: Mapped[str] = mapped_column(String(30))
     data: Mapped[bool] = mapped_column(default=False, nullable=True)
-    
-    create_at: Mapped[date] = mapped_column("crete_at", DateTime,default=func.now(), nullable=True)
-    
-    update_at: Mapped[date] = mapped_column("update_at", DateTime,default=func.now(), onupdate=func.now(), nullable=True)
-    
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user_id"),nullable=True)
-    
+
+    created_at: Mapped[date] = mapped_column("created_at", DateTime, default=func.now(), nullable=True)
+    updated_at: Mapped[date] = mapped_column("updated_at", DateTime, default=func.now(), onupdate=func.now(), nullable=True)
+
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=True)
     user: Mapped["User"] = relationship("User", backref="contacts", lazy="joined")

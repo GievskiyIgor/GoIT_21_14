@@ -6,7 +6,10 @@
         "automodule",
         "backref",
         "cloudinary",
+        "deadpool",
+        "dotenv",
         "fastapi",
+        "Gievskiy",
         "Googlebot",
         "healthchecker",
         "ilike",
@@ -16,6 +19,7 @@
         "owerite",
         "passlib",
         "poolclass",
+        "pycryptodome",
         "pydantic",
         "remcontact",
         "sessionmaker",
@@ -28,6 +32,7 @@
         "Trelent",
         "undoc",
         "upcontact",
+        "uvicorn",
         "viewcode"
     ]
 }

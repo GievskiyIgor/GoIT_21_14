@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi_limiter import FastAPILimiter
@@ -8,7 +9,9 @@ from starlette.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database.db import get_db
-from src.routes import contacts, auth, users
+from src.routes import contacts as contacts_routes
+from src.routes import auth as auth_routes
+from src.routes import users as users_routes
 from src.conf.config import config
 
 import re
@@ -18,8 +21,22 @@ from pathlib import Path
 import redis.asyncio as redis
 
 
-app = FastAPI()
+# app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup event
+    r = await redis.Redis(
+        host=config.REDIS_HOST,
+        port=config.REDIS_PORT,
+        password=config.REDIS_PASSWORD,
+        db=0,
+    )
+    
+    await FastAPILimiter.init(r)
+    yield
 
+
+app = FastAPI(lifespan=lifespan)
 
 banned_ips = [
     ip_address("192.168.1.1"),
@@ -63,28 +80,28 @@ async def user_ban_middleware(request: Request, call_next: Callable):
 BASE_DIR = Path(".")
 # app.mount("/static", StaticFiles(directory=BASE_DIR / "src" / "static"), name="static")
 
-app.include_router(auth.router, prefix="/api")
-app.include_router(contacts.router, prefix="/api")
-app.include_router(users.router, prefix="/api")
+app.include_router(auth_routes.router, prefix="/api")
+app.include_router(users_routes.router, prefix="/api")
+app.include_router(contacts_routes.router, prefix="/api")
 
 
-@app.on_event("startup")
-async def startup():
-    r = await redis.Redis(
-        host=config.REDIS_DOMAIN,
-        port=config.REDIS_PORT,
-        db=0,
-        password=config.REDIS_PASSWORD,
-        )
+# @app.on_event("startup")
+# async def startup():
+#     r = await redis.Redis(
+#         host=config.REDIS_DOMAIN,
+#         port=config.REDIS_PORT,
+#         password=config.REDIS_PASSWORD,
+#         db=0,
+#         )
     
-    """
-    The startup function is called when the application starts up.
-    It's a good place to initialize things that are used by the app, such as databases or caches.
+#     """
+#     The startup function is called when the application starts up.
+#     It's a good place to initialize things that are used by the app, such as databases or caches.
     
-    :return: A list of coroutines
-    :doc-author: Trelent
-    """ 
-    await FastAPILimiter.init(r)
+#     :return: A list of coroutines
+#     :doc-author: Trelent
+#     """ 
+#     await FastAPILimiter.init(r)
 
 
 templates = Jinja2Templates(directory=BASE_DIR/ "src" / "templates")
@@ -103,7 +120,7 @@ def index(request: Request):
     """
     
     # return {"message": "Contact App"}
-    return templates.TemplateResponse("index.html", {"request": request, "our": "Build group WebPython #16"})
+    return templates.TemplateResponse("index.html", {"request": request, "our": "Build group WebPython #21"})
 
 
 @app.get("/api/healthchecker")

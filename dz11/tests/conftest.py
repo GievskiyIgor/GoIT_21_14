@@ -4,8 +4,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from main import app
-from src.database.models import Base
+from src.database.models import Base, User
 from src.database.db import get_db
+
+import sys
+import os
+from unittest.mock import MagicMock
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
@@ -44,4 +50,19 @@ def client(session):
     
 @pytest.fixture(scope="module")
 def user():
-    return {"username": "IgorGIG", "email": "IgorGIG@example.com", "password": "123456789"} 
+    return {"username" : "deadpool" , "email" : "deadpool@example.com" , "password" : "123456789" } 
+
+@pytest.fixture()
+def token(client, user, session, monkeypatch):
+    mock_send_email = MagicMock()
+    monkeypatch.setattr("src.routes.auth.send_email", mock_send_email)
+    client.post("/api/auth/signup", json=user)
+    current_user: User = session.query(User).filter(User.email == user.get('email')).first()
+    current_user.confirmed = True
+    session.commit()
+    response = client.post(
+        "/api/auth/login",
+        data={"username": user.get('email'), "password": user.get('password')},
+    )
+    data = response.json()
+    return data["access_token"]
