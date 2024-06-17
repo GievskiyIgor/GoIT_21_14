@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "dz11"
+version = "0.1.0"
+description = ""
+authors = ["GievskiyIgor <121798393+GievskiyIgor@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+alembic = "^1.13.1"
+sqlalchemy = "^2.0.30"
+pydantic = "^2.7.4"
+fastapi = "^0.111.0"
+libgravatar = "^1.0.4"
+passlib = "^1.7.4"
+pycryptodome = "^3.20.0"
+fastapi-mail = "^1.4.1"
+cloudinary = "^1.40.0"
+sphinx = "^7.3.7"
+
+
+[tool.poetry.group.dev.dependencies]
+sphinx = "^7.3.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
