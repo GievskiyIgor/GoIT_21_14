@@ -6,15 +6,6 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
        
-    """
-        config Settings
-    
-        :param DB_URL
-        :type DB_URL: URL
-        :param SECRET_KEY_JWT
-        :type SECRET_KEY_JWT: key
-        
-    """
     DB_URL: str = "postgresql+asyncpg://postgres:1111@localhost:5432/contacts"
     SECRET_KEY_JWT: str = "secret_key"
     ALGORITHM: str = "HS256"

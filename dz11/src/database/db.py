@@ -12,13 +12,6 @@ class DatabaseSessionManager:
     @contextlib.asynccontextmanager
     async def session(self):
         
-        """
-        db session
-    
-        :param self
-        :type self: None
-        
-         """
         if self._session_maker is None:
             raise Exception("Session is not created")
         

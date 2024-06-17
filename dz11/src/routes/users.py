@@ -26,6 +26,15 @@ cloudinary.config(
 @router.get("/me", response_model=UserResponse, dependencies=[Depends(RateLimiter(times=1, seconds=20))],)
 async def det_current_user(user: User = Depends(auth_service.get_current_user)):
     
+    """
+    The get_current_user function is a dependency that will be injected into the
+        get_current_user endpoint. It uses the auth_service to retrieve the current user,
+        and returns it if found.
+    
+    :param user: User: Get the current user
+    :return: The user object
+    :doc-author: Trelent
+    """
     return user
 
 @router.path("/avatar", response_model=UserResponse, dependencies=[Depends(RateLimiter(times=1, seconds=20))],)
@@ -36,15 +45,15 @@ async def get_current_user(
     ):
     
     """
-        get_current_user
+    The get_current_user function is used to get the current user from the database.
+
+    :param file: UploadFile: Get the file from the request.
+    :param user: User: Get the current user from the database.
+    :param db: AsyncSession: Access the database.
+    :return: The user object.
+    :doc-author: Trelent
+    """
     
-        :param file
-        :type file: UploadFile
-        :param user
-        :type user: User
-       
-        
-    """ 
     public_id = f"Web21/{user.mail}"
     
     res = cloudinary.uploader.upload(file.file, public_id=public_id, owerite=True)

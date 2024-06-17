@@ -7,15 +7,17 @@ from src.schemas.contacts import ContactSchema, ContactUpdateSchema
 async def get_contacts(limit: int, offset: int, db: AsyncSession, user: User):
     
     """
-        get_contacts
-    
-        :param limit
-        :type limit: int
-        :param offset
-        :type offset: int
-       
+    The get_contacts function returns a list of contacts for the user.
         
+    
+    :param limit: int: Limit the number of contacts returned
+    :param offset: int: Skip the first n records
+    :param db: AsyncSession: Pass a database connection to the function
+    :param user: User: Filter the contacts by user
+    :return: A list of contacts
+    :doc-author: Trelent
     """
+    
     sq = select(Contact).filter_by(user=user).offset(offset).limit(limit)
     
     contacts = await db.execute(sq)
@@ -25,15 +27,16 @@ async def get_contacts(limit: int, offset: int, db: AsyncSession, user: User):
 async def get_all_contacts(limit: int, offset: int, db: AsyncSession):
     
     """
-        get_all_contacts
-    
-        :param limit
-        :type limit: int
-        :param offset
-        :type offset: int
-       
+    The get_all_contacts function returns a list of all contacts in the database.
         
+    
+    :param limit: int: Limit the number of contacts returned
+    :param offset: int: Skip the first n rows of data
+    :param db: AsyncSession: Pass in the database session to the function
+    :return: A list of contact objects
+    :doc-author: Trelent
     """
+    
     sq = select(Contact).offset(offset).limit(limit)
     
     contacts = await db.execute(sq)
@@ -41,6 +44,17 @@ async def get_all_contacts(limit: int, offset: int, db: AsyncSession):
     
 
 async def get_contact(contact_id: int, db: AsyncSession, user: User):
+    
+    """
+    The get_contact function returns a contact object from the database.
+    
+    :param contact_id: int: Filter the query by contact id
+    :param db: AsyncSession: Pass in the database session
+    :param user: User: Filter the contacts by user
+    :return: A contact object
+    :doc-author: Trelent
+    """
+    
     sq = select(Contact).filter_by(id=contact_id, user=User)
     
     contact = await db.execute(sq)
@@ -48,6 +62,17 @@ async def get_contact(contact_id: int, db: AsyncSession, user: User):
     
 
 async def create_todo(body: ContactSchema, db: AsyncSession, user: User):
+    
+    """
+    The create_todo function creates a new todo item.
+    
+    :param body: ContactSchema: Validate the request body
+    :param db: AsyncSession: Pass the database connection to the function
+    :param user: User: Get the user who is making the request
+    :return: A contact object
+    :doc-author: Trelent
+    """
+    
     contact = Contact(**body.model_dump(exclude_unset=True), user=user)
     db.add(contact)
     await db.commit()
@@ -57,6 +82,17 @@ async def create_todo(body: ContactSchema, db: AsyncSession, user: User):
 
 
 async def update_contact(contact_id: int, body: ContactUpdateSchema, db: AsyncSession, user: User):
+    
+    """
+    The update_contact function updates a contact in the database.
+    
+    :param contact_id: int: Identify the contact that we want to update
+    :param body: ContactUpdateSchema: Validate the request body
+    :param db: AsyncSession: Pass a database session to the function
+    :param user: User: Get the user from the request
+    :return: A contact
+    :doc-author: Trelent
+    """
     sq = select(Contact).filter_by(id=contact_id, user=user)
        
     upcontact = await db.execute(sq)
@@ -74,6 +110,16 @@ async def update_contact(contact_id: int, body: ContactUpdateSchema, db: AsyncSe
     return contact
 
 async def remove_contact(contact_id: int, db: AsyncSession, user: User):
+    
+    """
+    The remove_contact function removes a contact from the database.
+    
+    :param contact_id: int: Specify which contact to remove
+    :param db: AsyncSession: Pass the database session to the function
+    :param user: User: Identify the user who is making the request
+    :return: A contact object if the contact was found and deleted, or none if it wasn't
+    :doc-author: Trelent
+    """
     sq = select(Contact).filter_by(id=contact_id, user=user)
        
     remcontact = await db.execute(sq)

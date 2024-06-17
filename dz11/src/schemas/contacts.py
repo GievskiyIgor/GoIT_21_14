@@ -7,16 +7,6 @@ from src.schemas.user import UserResponse
 
 class ContactSchema(BaseModel):  
     
-    """
-        ContactSchema
-    
-        :param first_name
-        :type first_name: str
-        :param last_name
-        :type last_name: str
-       
-        
-    """ 
     first_name: str = Field(max_length=50, min_length=3)
     last_name: str = Field(max_length=50, min_length=3)
     email: str = Field(max_length=30, min_length=5)

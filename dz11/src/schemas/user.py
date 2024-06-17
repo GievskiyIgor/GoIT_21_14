@@ -3,18 +3,7 @@ from pydantic import BaseModel, EmailStr, Field
 from src.database.models import Role
 
 class UserSchema(BaseModel):
-    
-     
-    """
-        UserSchema
-    
-        :param username
-        :type username: str
-        :param password
-        :type password: str
-       
-        
-    """ 
+   
     username: str = Field(min_length=3, max_length=50)
     email: EmailStr
     password: str = Field(min_length=6, max_length=8)
